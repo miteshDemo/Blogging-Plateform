@@ -16,9 +16,17 @@ import {
   Fade,
   useTheme,
   useMediaQuery,
-  alpha
+  alpha,
 } from "@mui/material";
-import { Visibility, VisibilityOff, Person, Email, Lock, ArrowBack, Create } from "@mui/icons-material";
+import {
+  Visibility,
+  VisibilityOff,
+  Person,
+  Email,
+  Lock,
+  ArrowBack,
+  Create,
+} from "@mui/icons-material";
 
 // Strong validation schema
 const validationSchema = Yup.object({
@@ -32,7 +40,10 @@ const validationSchema = Yup.object({
     .matches(/[a-z]/, "Must contain at least one lowercase letter")
     .matches(/[A-Z]/, "Must contain at least one uppercase letter")
     .matches(/[0-9]/, "Must contain at least one number")
-    .matches(/[!@#$%^&*(),.?":{}|<>]/, "Must contain at least one special character")
+    .matches(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      "Must contain at least one special character"
+    )
     .required("Password is required"),
 });
 
@@ -40,7 +51,7 @@ function Register() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const formik = useFormik({
     initialValues: { name: "", email: "", password: "" },
@@ -69,7 +80,7 @@ function Register() {
         alignItems: "center",
         justifyContent: "center",
         py: 2,
-        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)"
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
       }}
     >
       <Container maxWidth="sm">
@@ -80,7 +91,7 @@ function Register() {
               p: isMobile ? 3 : 4,
               borderRadius: 3,
               background: "white",
-              boxShadow: "0 10px 20px rgba(0,0,0,0.1)"
+              boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
             }}
           >
             <Box sx={{ textAlign: "center", mb: 2 }}>
@@ -93,12 +104,17 @@ function Register() {
                   height: 60,
                   borderRadius: 2,
                   bgcolor: "primary.main",
-                  mb: 1.5
+                  mb: 1.5,
                 }}
               >
                 <Create sx={{ fontSize: 32, color: "white" }} />
               </Box>
-              <Typography variant="h5" fontWeight="700" gutterBottom color="primary">
+              <Typography
+                variant="h5"
+                fontWeight="700"
+                gutterBottom
+                color="primary"
+              >
                 Register
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -157,7 +173,9 @@ function Register() {
                   type={showPassword ? "text" : "password"}
                   value={formik.values.password}
                   onChange={formik.handleChange}
-                  error={formik.touched.password && Boolean(formik.errors.password)}
+                  error={
+                    formik.touched.password && Boolean(formik.errors.password)
+                  }
                   helperText={formik.touched.password && formik.errors.password}
                   InputProps={{
                     startAdornment: (
@@ -186,13 +204,22 @@ function Register() {
                 fullWidth
                 size="medium"
                 disabled={formik.isSubmitting}
-                sx={{ py: 1.2, borderRadius: 2, fontWeight: 600, textTransform: "none" }}
+                sx={{
+                  py: 1.2,
+                  borderRadius: 2,
+                  fontWeight: 600,
+                  textTransform: "none",
+                }}
               >
                 Create Account
               </Button>
 
               <Box textAlign="center" mt={2}>
-                <Typography variant="body2" display="inline" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  display="inline"
+                  color="text.secondary"
+                >
                   Already have an account?{" "}
                 </Typography>
                 <Button
