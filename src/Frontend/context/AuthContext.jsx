@@ -3,20 +3,17 @@ import { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
+  const [user, setUser] = useState(null); // start as null
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if token exists and validate it
     const token = localStorage.getItem("token");
     const userData = JSON.parse(localStorage.getItem("user"));
-    
+
     if (token && userData) {
-      // Set authorization header for API calls
-      // This would typically be done in your API utility
-      setUser(userData);
+      setUser(userData); // user should now have the name
     }
-    
+
     setLoading(false);
   }, []);
 

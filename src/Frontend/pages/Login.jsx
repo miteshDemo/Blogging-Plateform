@@ -17,7 +17,7 @@ import {
   useTheme,
   useMediaQuery
 } from "@mui/material";
-import { Visibility, VisibilityOff, Email, Lock, Create } from "@mui/icons-material";
+import { Visibility, VisibilityOff, Email, Lock, Create, ArrowBack } from "@mui/icons-material";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -72,6 +72,17 @@ function Login() {
               boxShadow: "0 10px 20px rgba(0,0,0,0.1)"
             }}
           >
+            {/* Back Button */}
+            <Box textAlign="left" mb={2}>
+              <Button
+                startIcon={<ArrowBack />}
+                onClick={() => navigate("/")}
+                sx={{ textTransform: "none", fontWeight: 600 }}
+              >
+                Back to Home
+              </Button>
+            </Box>
+
             <Box sx={{ textAlign: "center", mb: 2 }}>
               <Box
                 sx={{

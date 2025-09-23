@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -18,6 +18,8 @@ import {
   Divider,
   Avatar,
   Stack,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import {
   Search,
@@ -25,35 +27,26 @@ import {
   Favorite,
   Share,
   Bookmark,
-  Menu,
   Facebook,
   Twitter,
   Instagram,
   LinkedIn,
   PersonAdd,
+  AccountCircle,
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext.jsx"; // 🔑 context
 
-// Create a custom theme
+// Custom Theme
 const theme = createTheme({
   palette: {
-    primary: {
-      main: "#1976d2",
-    },
-    secondary: {
-      main: "#dc004e",
-    },
+    primary: { main: "#1976d2" },
+    secondary: { main: "#dc004e" },
   },
   typography: {
-    h1: {
-      fontSize: "3.5rem",
-      fontWeight: 700,
-    },
-    h2: {
-      fontSize: "2.5rem",
-      fontWeight: 600,
-    },
+    h1: { fontSize: "3.5rem", fontWeight: 700 },
+    h2: { fontSize: "2.5rem", fontWeight: 600 },
   },
 });
 
@@ -65,7 +58,7 @@ const blogPosts = [
     excerpt:
       "Learn how to create beautiful React applications using Material-UI components and theming.",
     image:
-      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=1000&q=80",
     category: "React",
     date: "May 15, 2024",
     author: "Jane Doe",
@@ -77,7 +70,7 @@ const blogPosts = [
     excerpt:
       "Explore the latest trends and best practices in modern web development for 2024.",
     image:
-      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1000&q=80",
     category: "Web Development",
     date: "May 12, 2024",
     author: "John Smith",
@@ -89,7 +82,7 @@ const blogPosts = [
     excerpt:
       "Learn how to create responsive and accessible user interfaces using Material-UI Grid system.",
     image:
-      "https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1000&q=80",
     category: "UI/UX",
     date: "May 10, 2024",
     author: "Alice Johnson",
@@ -97,6 +90,7 @@ const blogPosts = [
   },
 ];
 
+// Categories
 const popularCategories = [
   "React",
   "JavaScript",
@@ -106,38 +100,57 @@ const popularCategories = [
   "Programming",
 ];
 
-const BlogApp = () => {
+const Home = () => {
   const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext); // 👤 user + logout
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleOpenRegisterModal = () => {
-    navigate("/register");
-  };
+  // Menu handlers
+  const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
+
+  // Navigate functions
+  const handleRegister = () => navigate("/register");
+  const handleLogin = () => navigate("/login");
+  const handleWrite = () => navigate("/create-blog");
+  const handleDashboard = () => navigate("/dashboard");
+  const handleProfile = () => navigate("/profile");
 
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1 }}>
-        {/* Navigation Bar */}
+        {/* Navbar */}
         <AppBar position="static" elevation={0}>
           <Container maxWidth="lg">
             <Toolbar>
               <Typography
                 variant="h6"
                 component="div"
-                sx={{ flexGrow: 1, fontWeight: "bold" }}
+                sx={{ flexGrow: 1, fontWeight: "bold", cursor: "pointer" }}
+                onClick={() => navigate("/")}
               >
                 BlogSpace
               </Typography>
 
+              {/* Desktop Nav Links */}
               <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
-                <Button color="inherit">Home</Button>
-                <Button color="inherit">Categories</Button>
-                <Button color="inherit">About</Button>
-                <Button color="inherit">Contact</Button>
+                <Button color="inherit" onClick={() => navigate("/")}>
+                  Home
+                </Button>
+                <Button color="inherit" onClick={() => navigate("/blogs")}>
+                  Explore
+                </Button>
+                <Button color="inherit" onClick={() => navigate("/about")}>
+                  About
+                </Button>
+                <Button color="inherit" onClick={() => navigate("/contact")}>
+                  Contact
+                </Button>
               </Box>
 
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, ml: 2 }}
-              >
+              {/* Right Side */}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: 2 }}>
+                {/* Search Bar */}
                 <Paper
                   component="form"
                   sx={{
@@ -152,39 +165,84 @@ const BlogApp = () => {
                     placeholder="Search articles..."
                     inputProps={{ "aria-label": "search articles" }}
                   />
-                  <IconButton
-                    type="button"
-                    sx={{ p: "10px" }}
-                    aria-label="search"
-                  >
+                  <IconButton type="button" sx={{ p: "10px" }}>
                     <Search />
                   </IconButton>
                 </Paper>
 
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<Create />}
-                  sx={{ ml: 1 }}
-                >
-                  Write
-                </Button>
+                {/* Write Button */}
+                {user && (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<Create />}
+                    sx={{ ml: 1 }}
+                    onClick={handleWrite}
+                  >
+                    Write
+                  </Button>
+                )}
 
-                <Button
-                  color="inherit"
-                  startIcon={<PersonAdd />}
-                  onClick={handleOpenRegisterModal}
-                  sx={{ ml: 1 }}
-                >
-                  Register
-                </Button>
-
-                <IconButton
-                  color="inherit"
-                  sx={{ display: { xs: "flex", md: "none" } }}
-                >
-                  <Menu />
-                </IconButton>
+                {/* Auth buttons */}
+                {user ? (
+                  <>
+                    <IconButton onClick={handleMenuOpen} sx={{ ml: 1 }}>
+                      <Avatar>
+                        {user?.name ? user.name[0] : <AccountCircle />}
+                      </Avatar>
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          handleProfile();
+                          handleMenuClose();
+                        }}
+                      >
+                        Profile
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleDashboard();
+                          handleMenuClose();
+                        }}
+                      >
+                        My Blogs
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          logout();
+                          handleMenuClose();
+                          navigate("/");
+                        }}
+                      >
+                        Logout
+                      </MenuItem>
+                    </Menu>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      color="inherit"
+                      startIcon={<AccountCircle />}
+                      onClick={handleLogin}
+                      sx={{ ml: 1 }}
+                    >
+                      Login
+                    </Button>
+                    <Button
+                      color="inherit"
+                      startIcon={<PersonAdd />}
+                      onClick={handleRegister}
+                      sx={{ ml: 1 }}
+                    >
+                      Register
+                    </Button>
+                  </>
+                )}
               </Box>
             </Toolbar>
           </Container>
@@ -210,34 +268,29 @@ const BlogApp = () => {
               variant="contained"
               color="secondary"
               size="large"
-              sx={{
-                px: 4,
-                py: 1.5,
-                fontSize: "1.1rem",
-                mr: 2,
-              }}
+              sx={{ px: 4, py: 1.5, fontSize: "1.1rem", mr: 2 }}
+              onClick={() => navigate("/blogs")}
             >
               Start Reading
             </Button>
-            <Button
-              variant="outlined"
-              color="inherit"
-              size="large"
-              sx={{
-                px: 4,
-                py: 1.5,
-                fontSize: "1.1rem",
-              }}
-              onClick={handleOpenRegisterModal}
-            >
-              Join Now
-            </Button>
+
+            {/* Hide Join Now if logged in */}
+            {!user && (
+              <Button
+                variant="outlined"
+                color="inherit"
+                size="large"
+                sx={{ px: 4, py: 1.5, fontSize: "1.1rem" }}
+                onClick={handleRegister}
+              >
+                Join Now
+              </Button>
+            )}
           </Container>
         </Box>
 
-        {/* Main Content */}
+        {/* Featured Posts */}
         <Container maxWidth="lg" sx={{ py: 6 }}>
-          {/* Featured Posts */}
           <Typography variant="h2" gutterBottom sx={{ mb: 4 }}>
             Featured Posts
           </Typography>
@@ -272,7 +325,7 @@ const BlogApp = () => {
                         variant="outlined"
                       />
                     </Box>
-                    <Typography gutterBottom variant="h5" component="h2">
+                    <Typography gutterBottom variant="h5">
                       {post.title}
                     </Typography>
                     <Typography color="text.secondary" sx={{ mb: 2 }}>
@@ -286,9 +339,7 @@ const BlogApp = () => {
                         mt: 2,
                       }}
                     >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Avatar sx={{ width: 32, height: 32 }}>
                           {post.author[0]}
                         </Avatar>
@@ -328,27 +379,19 @@ const BlogApp = () => {
             ))}
           </Grid>
 
-          {/* Categories Section */}
+          {/* Categories */}
           <Box sx={{ mt: 8 }}>
             <Typography variant="h2" gutterBottom>
               Popular Categories
             </Typography>
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{ flexWrap: "wrap", gap: 1 }}
-            >
+            <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 1 }}>
               {popularCategories.map((category) => (
                 <Chip
                   key={category}
                   label={category}
                   clickable
                   variant="outlined"
-                  sx={{
-                    px: 2,
-                    py: 1,
-                    fontSize: "1rem",
-                  }}
+                  sx={{ px: 2, py: 1, fontSize: "1rem" }}
                 />
               ))}
             </Stack>
@@ -372,8 +415,7 @@ const BlogApp = () => {
                   BlogSpace
                 </Typography>
                 <Typography variant="body2">
-                  A platform for writers and readers to share knowledge,
-                  stories, and ideas.
+                  A platform for writers and readers to share knowledge, stories, and ideas.
                 </Typography>
               </Grid>
               <Grid item xs={12} md={4}>
@@ -414,21 +456,24 @@ const BlogApp = () => {
           </Container>
         </Box>
 
-        {/* Floating Action Button */}
-        <Fab
-          color="secondary"
-          aria-label="write"
-          sx={{
-            position: "fixed",
-            bottom: 24,
-            right: 24,
-          }}
-        >
-          <Create />
-        </Fab>
+        {/* Floating Write Button */}
+        {user && (
+          <Fab
+            color="secondary"
+            aria-label="write"
+            sx={{
+              position: "fixed",
+              bottom: 24,
+              right: 24,
+            }}
+            onClick={handleWrite}
+          >
+            <Create />
+          </Fab>
+        )}
       </Box>
     </ThemeProvider>
   );
 };
 
-export default BlogApp;
+export default Home;

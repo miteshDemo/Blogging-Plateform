@@ -10,13 +10,11 @@ import {
   Box,
   TextField,
   Button,
-  Grid,
   InputAdornment,
   IconButton,
   Fade,
   useTheme,
   useMediaQuery,
-  alpha,
 } from "@mui/material";
 import {
   Visibility,
@@ -84,7 +82,7 @@ function Register() {
       }}
     >
       <Container maxWidth="sm">
-        <Fade in={true} timeout={500}>
+        <Fade in timeout={500}>
           <Paper
             elevation={8}
             sx={{
@@ -94,6 +92,17 @@ function Register() {
               boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
             }}
           >
+            {/* Back Button */}
+            <Box textAlign="left" mb={2}>
+              <Button
+                startIcon={<ArrowBack />}
+                onClick={() => navigate("/")}
+                sx={{ textTransform: "none", fontWeight: 600 }}
+              >
+                Back to Home
+              </Button>
+            </Box>
+
             <Box sx={{ textAlign: "center", mb: 2 }}>
               <Box
                 sx={{
@@ -109,12 +118,7 @@ function Register() {
               >
                 <Create sx={{ fontSize: 32, color: "white" }} />
               </Box>
-              <Typography
-                variant="h5"
-                fontWeight="700"
-                gutterBottom
-                color="primary"
-              >
+              <Typography variant="h5" fontWeight="700" gutterBottom color="primary">
                 Register
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -173,9 +177,7 @@ function Register() {
                   type={showPassword ? "text" : "password"}
                   value={formik.values.password}
                   onChange={formik.handleChange}
-                  error={
-                    formik.touched.password && Boolean(formik.errors.password)
-                  }
+                  error={formik.touched.password && Boolean(formik.errors.password)}
                   helperText={formik.touched.password && formik.errors.password}
                   InputProps={{
                     startAdornment: (
@@ -204,22 +206,13 @@ function Register() {
                 fullWidth
                 size="medium"
                 disabled={formik.isSubmitting}
-                sx={{
-                  py: 1.2,
-                  borderRadius: 2,
-                  fontWeight: 600,
-                  textTransform: "none",
-                }}
+                sx={{ py: 1.2, borderRadius: 2, fontWeight: 600, textTransform: "none" }}
               >
                 Create Account
               </Button>
 
               <Box textAlign="center" mt={2}>
-                <Typography
-                  variant="body2"
-                  display="inline"
-                  color="text.secondary"
-                >
+                <Typography variant="body2" display="inline" color="text.secondary">
                   Already have an account?{" "}
                 </Typography>
                 <Button

@@ -2,7 +2,9 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+
 import authRoutes from "./routes/auth.js";
+import blogRoutes from "./routes/blogRoutes.js"; // ✅ add blog routes
 
 // Load environment variables
 dotenv.config();
@@ -16,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/blogs", blogRoutes); // ✅ new blog route
 
 // Default route
 app.get("/", (req, res) => res.send("Blog Platform API running"));
@@ -38,27 +41,27 @@ const connectDB = async (uri) => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log("MongoDB connected successfully");
+    console.log("✅ MongoDB connected successfully");
   } catch (error) {
-    console.error("MongoDB connection error:", error);
+    console.error("❌ MongoDB connection error:", error);
     process.exit(1);
   }
 };
 
-// Hardcoded config with fallback
+// Config with fallback
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/Blogs";
 
-// Connect to MongoDB and start server
+// Connect & start server
 connectDB(MONGO_URI)
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`MongoDB connected to: ${MONGO_URI}`);
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📦 MongoDB connected to: ${MONGO_URI}`);
     });
   })
   .catch((error) => {
-    console.error("Failed to start server:", error);
+    console.error("❌ Failed to start server:", error);
   });
 
 export default app;
